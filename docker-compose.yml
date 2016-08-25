@@ -1,0 +1,26 @@
+nginx:
+  image: issei/nginx-fluentd
+  ports:
+    - '8080:80'
+  log_driver: 'fluentd'
+  log_opt:
+    fluentd-address: localhost:24224
+    fluentd-tag: nginx.{{.FullID}}
+fluentd:
+  image: issei/fluent-es
+  links:
+    - elasticsearch:elasticsearch
+  ports:
+    - '24224:24224'
+elasticsearch:
+  image: elasticsearch
+  command: elasticsearch -Des.network.bind.host=0.0.0.0
+  ports:
+    - '9200:9200'
+    - '9300:9300'
+kibana:
+  image: kibana
+  ports:
+    - '5601:5601'
+  links:
+    - elasticsearch:elasticsearch
