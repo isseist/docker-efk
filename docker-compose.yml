@@ -16,10 +16,20 @@ fluentd:
     - elasticsearch:elasticsearch
   ports:
     - '24224:24224'
-nginx:
+nginx1:
   image: issei/nginx-fluentd
   ports:
-    - '8080:80'
+    - '8081:80'
+  log_driver: 'fluentd'
+  links:
+    - fluentd:fluentd
+  log_opt:
+    fluentd-address: 127.0.0.1:24224
+    fluentd-tag: nginx.{{.FullID}}
+nginx2:
+  image: issei/nginx-fluentd
+  ports:
+    - '8082:80'
   log_driver: 'fluentd'
   links:
     - fluentd:fluentd
